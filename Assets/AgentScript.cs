@@ -11,7 +11,7 @@ public class AgentScript : MonoBehaviour
     [SerializeField] Transform BaseTransform;
     bool ChaseMode = false;
     bool IsOnStart = true;
-    [SerializeField] Animator anim;
+    //[SerializeField] Animator anim;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,7 +25,7 @@ public class AgentScript : MonoBehaviour
         if (ChaseMode)
         {
             agent.destination = TargetTransform.position;
-            anim.SetBool("iswalking", true);
+            //anim.SetBool("iswalking", true);
         }
         else
         {
