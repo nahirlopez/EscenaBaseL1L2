@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
+
 
 public class AgentScript : MonoBehaviour
 {
@@ -10,7 +12,10 @@ public class AgentScript : MonoBehaviour
     [SerializeField] Transform TargetTransform;
     [SerializeField] Transform BaseTransform;
     bool ChaseMode = false;
-    bool IsOnStart = true;
+    [SerializeField] GameObject CUIDADO;
+    [SerializeField] Text vida;
+    int VidaDeMutante = 10;
+ 
     //[SerializeField] Animator anim;
     // Start is called before the first frame update
     void Start()
@@ -22,21 +27,26 @@ public class AgentScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        vida.text = ("VIDA DEL MUTANTE: " + VidaDeMutante);
         if (ChaseMode)
         {
             agent.destination = TargetTransform.position;
-            //anim.SetBool("iswalking", true);
+            
         }
         else
         {
             agent.destination = BaseTransform.position;
         }
+        if (Input.GetKeyDown(KeyCode.Q) && ChaseMode)
+        {
+            VidaDeMutante--;
+        }
 
-        //if (IsOnStart)
-        //{
-        //    anim.SetBool("iswalking", false);
-        //}
-        
+        if(VidaDeMutante == 0)
+        {
+            CUIDADO.SetActive(false);
+            Destroy(gameObject);
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -44,32 +54,19 @@ public class AgentScript : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             ChaseMode = true;
-            StartCoroutine(SetOffChaseMode());
-        }
-        
-    }
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.name == "START")
-        {
-            IsOnStart = true;
-        }
-        else
-        {
-            IsOnStart = false;
+            CUIDADO.SetActive(true);
         }
     }
+  
     void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
             ChaseMode = false;
+            CUIDADO.SetActive(false);
+            VidaDeMutante = 10; 
         }
         
     }
-    IEnumerator SetOffChaseMode()
-    {
-        yield return new WaitForSeconds(5);
-        ChaseMode = false;
-    }
+   
 }
